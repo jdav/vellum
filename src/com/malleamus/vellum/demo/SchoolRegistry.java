@@ -2,10 +2,10 @@ package com.malleamus.vellum.demo;
 
 import java.io.File;
 
-import com.malleamus.vellum.Registry;
 import com.malleamus.vellum.VellumException;
+import com.malleamus.vellum.registry.LocalRegistry;
 
-public class SchoolRegistry extends Registry {
+public class SchoolRegistry extends LocalRegistry {
 	
 	private static SchoolRegistry instance = null;
 	

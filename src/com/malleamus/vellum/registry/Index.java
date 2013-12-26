@@ -1,7 +1,11 @@
-package com.malleamus.vellum;
+package com.malleamus.vellum.registry;
 
 import java.lang.reflect.Field;
 import java.util.Hashtable;
+
+import com.malleamus.vellum.Persisting;
+import com.malleamus.vellum.Registerable;
+import com.malleamus.vellum.RegistrationNumbers;
 
 
 public class Index extends Hashtable<String, RegistrationNumbers> {

@@ -1,4 +1,4 @@
-package com.malleamus.vellum;
+package com.malleamus.vellum.registry;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,18 +19,20 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-public class Registry {
+import com.malleamus.vellum.Persisting;
+import com.malleamus.vellum.Persistings;
+import com.malleamus.vellum.Registerable;
+import com.malleamus.vellum.RegisterableFactory;
+import com.malleamus.vellum.RegistrationNumber;
+import com.malleamus.vellum.RegistrationNumbers;
+import com.malleamus.vellum.VellumException;
 
-	public Registry(File file, RegisterableFactory factory) {
+public class LocalRegistry implements Registry {
+
+	public LocalRegistry(File file, RegisterableFactory factory) {
 		super();
 		this.file = file;
 		this.factory = factory;
-	}
-
-	public void load(InputStream is) throws IOException {
-		Properties props = new Properties();
-		props.load(is);
-		fromProperties(props);
 	}
 	
 	public void clear() {
@@ -38,21 +40,10 @@ public class Registry {
 		checkOuts.clear();
 	}
 
-	public void store(OutputStream os, String string) throws IOException {
-		Properties props = toProperties();
-		props.store(os, string);
-	}
-
 	/**
 	 * Load data from file
-	 * 
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 * @throws ClassNotFoundException
-	 * @throws InstantiationException
 	 */
-	public void load() throws IllegalArgumentException, IllegalAccessException,
-			ClassNotFoundException, InstantiationException {
+	public void load() throws VellumException {
 		try {
 			if (file.exists()) {
 				synchronized (this) {
@@ -69,24 +60,23 @@ public class Registry {
 					fos.close();
 				}
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new VellumException(e);
 		}
 	}
 
 	/**
 	 * Store data to file
-	 * 
-	 * @throws FileNotFoundException
-	 * @throws IOException
 	 */
-	public void store() throws FileNotFoundException, IOException {
-		synchronized (this) {
-			FileOutputStream fos = new FileOutputStream(file);
-			store(fos, "");
-			fos.close();
+	public void store() throws VellumException {
+		try {
+			synchronized (this) {
+				FileOutputStream fos = new FileOutputStream(file);
+				store(fos, "");
+				fos.close();
+			}
+		} catch (Exception e) {
+			throw new VellumException(e);
 		}
 	}
 
@@ -130,12 +120,6 @@ public class Registry {
 	/**
 	 * Build a single object associated with a specific registration number from
 	 * the contents of the data
-	 * 
-	 * @param props
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
 	 */
 	public Registerable getCopy(RegistrationNumber rn)
 			throws VellumException {
@@ -180,8 +164,6 @@ public class Registry {
 	 * object that have changed since it was last checked in.
 	 * 
 	 * @param t
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
 	public void checkIn(Registerable t) throws VellumException {
 		try {
@@ -247,11 +229,8 @@ public class Registry {
 	 * Delete the input Registerable object from the Registry's data
 	 * 
 	 * @param t
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
-	public void withdraw(Registerable t) throws IllegalArgumentException,
-			IllegalAccessException {
+	public void withdraw(Registerable t) throws VellumException {
 
 		// Find all of the property values...
 		Persistings pes = t.getState();
@@ -292,6 +271,25 @@ public class Registry {
 												  // constructor
 
 	private static final long serialVersionUID = -2804882784191950300L;
+
+	private void load(InputStream is) throws VellumException {
+		try {
+			Properties props = new Properties();
+			props.load(is);
+			fromProperties(props);
+		} catch (Exception e) {
+			throw new VellumException(e);
+		}
+	}
+	
+	private void store(OutputStream os, String string) throws VellumException {
+		try {
+			Properties props = toProperties();
+			props.store(os, string);
+		} catch (Exception e) {
+			throw new VellumException(e);
+		}
+	}
 
 	/**
 	 * Unique set of property entries
