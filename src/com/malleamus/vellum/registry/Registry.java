@@ -2,22 +2,13 @@ package com.malleamus.vellum.registry;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import com.malleamus.vellum.Persisting;
 import com.malleamus.vellum.Persistings;
@@ -27,9 +18,9 @@ import com.malleamus.vellum.RegistrationNumber;
 import com.malleamus.vellum.RegistrationNumbers;
 import com.malleamus.vellum.VellumException;
 
-public class LocalRegistry implements Registry {
+public class Registry {
 
-	public LocalRegistry(File file, RegisterableFactory factory) {
+	public Registry(File file, RegisterableFactory factory) {
 		super();
 		this.file = file;
 		this.factory = factory;
@@ -138,7 +129,7 @@ public class LocalRegistry implements Registry {
 			}
 
 			// Then create an object based on those properties and return it
-			return (Registerable) factory.create(e);
+			return factory.create(e);
 		} catch (VellumException ve) {
 			throw ve;
 		} catch (Exception e) {
@@ -300,19 +291,19 @@ public class LocalRegistry implements Registry {
 	 * This map allows all of the property entries associated with a particular
 	 * registration number to be retrieved.
 	 */
-	private Map<RegistrationNumber, Persistings> peMap = 
+	private final Map<RegistrationNumber, Persistings> peMap = 
 				new Hashtable<RegistrationNumber, Persistings>();
 
 	/**
 	 * This map allows you to find an index of registerable objects based on the
 	 * name of an attribute.
 	 */
-	private Map<String, Index> indexes = new Hashtable<String, Index>();
+	private final Map<String, Index> indexes = new Hashtable<String, Index>();
 	
 	/**
 	 * This map allows you to manage checkouts.
 	 */
-	private Map<RegistrationNumber, Registerable> checkOuts = 
+	private final Map<RegistrationNumber, Registerable> checkOuts = 
 			new Hashtable<RegistrationNumber, Registerable>();
 
 	private Properties toProperties() {

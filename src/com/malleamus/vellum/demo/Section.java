@@ -10,7 +10,7 @@ import com.malleamus.vellum.Registerables;
 import com.malleamus.vellum.RegistrationNumber;
 import com.malleamus.vellum.Utilities;
 import com.malleamus.vellum.VellumException;
-import com.malleamus.vellum.registry.LocalRegistry;
+import com.malleamus.vellum.registry.Registry;
 
 public class Section implements Registerable {
 
