@@ -10,6 +10,14 @@ public class Persistings extends ArrayList<Persisting> {
 	
 	public Persistings() {}
 	
+	public Persistings(String serial) {
+		String[] components = serial.split("::");
+		this.rn = new RegistrationNumber(components[0]);
+		for (int x=1; x<components.length; x++) {
+			this.add(new Persisting(components[x]));
+		}
+	}
+	
 	public Persistings(RegistrationNumber rn) {
 		this.rn = rn;
 	}
@@ -28,9 +36,17 @@ public class Persistings extends ArrayList<Persisting> {
 	}
 	
 	public String toString() {
-		String ret = this.rn + ":\n";
+		String ret = this.rn + "\n";
 		for (Persisting pe : this) {
 			ret += pe + "\n";
+		}
+		return ret;
+	}
+	
+	public String serialize() {
+		String ret = this.rn + "::";
+		for (Persisting pe : this) {
+			ret += pe + "::";
 		}
 		return ret;
 	}

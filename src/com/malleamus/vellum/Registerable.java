@@ -62,4 +62,8 @@ public interface Registerable {
 	public int hashCode();
 	
 	public boolean equals(Object o);
+	
+	public String serialize();
+	
+	public void deserialize(String sr);
 }
